@@ -1,0 +1,12 @@
+{% block content %}
+<h4>{{ question }}</h4>
+<form action="/answer" method="POST" id="my_form">
+  {% for o in options %}
+  <label for="{{ o }}" form="my_form">
+    <input type="radio" id="my_form" name="answer" value="{{ o }}" />
+    {{ o }}
+  </label>
+  {% endfor %}
+  <input type="submit" value="Submit" />
+</form>
+{% endblock %}
