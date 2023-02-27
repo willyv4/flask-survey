@@ -53,15 +53,14 @@ surveys = {
     "personality": personality_quiz,
 }
 
-lst = []
-choices = []
+# lst = []
+# choices = []
+# for item in satisfaction_survey.questions:
+#     for ans in [item.choices]:
+#         choices.append(ans)
+#     lst.append(item.question)
+# print(choices[2])
+questions = []
 for item in satisfaction_survey.questions:
-    for ans in [item.choices]:
-        choices.append(ans)
-    lst.append(item.question)
-print(choices[2])
-
-
-# print(f"""allow text: {item.allow_text}""")
-# print(f"""question: {item.question}""")
-# print(f"""choices: {item.choices}""")
+    questions.append(item.question)
+print(questions[1])

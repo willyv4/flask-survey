@@ -1,4 +1,4 @@
-{% block content %}
+{% block content %} {% include "flash.html" %}
 <h4>{{ question }}</h4>
 <form action="/answer" method="POST" id="my_form">
   {% for o in options %}
