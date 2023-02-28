@@ -1,4 +1,5 @@
-from flask import Flask, request, render_template, redirect, flash, url_for
+from urllib import response
+from flask import Flask, session, flash, request, render_template, redirect
 from flask_debugtoolbar import DebugToolbarExtension
 from surveys import satisfaction_survey
 
@@ -7,8 +8,16 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = "IAMCOOL1234"
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
+q_len = len(satisfaction_survey.questions)
 
-responses = []
+
+@app.route('/sesh', methods=["POST"])
+def sesh_response():
+
+    session['responses'] = []
+    sesh_len = len(session['responses'])
+    print(session['responses'])
+    return redirect(f'/questions/{sesh_len}')
 
 
 @app.route("/")
@@ -29,21 +38,25 @@ def view(num):
     c = [item.choices for item in satisfaction_survey.questions]
     c1, c2, c3, c4 = c[:4]
 
-    if num == 0:
-        return render_template("q_one.html", question=q1, options=c1)
-    elif num == 1:
-        return render_template("q_two.html", question=q2, options=c2)
-    elif num == 2:
-        return render_template("q_three.html", question=q3, options=c3)
-    elif num == 3:
-        return render_template("q_four.html", question=q4, options=c4)
-    elif num == 4:
-        return redirect("/thanks")
+    sesh_len = len(session['responses'])
 
+    if sesh_len == 0:
+        return render_template("q_one.html", question=q1, options=c1)
+    elif sesh_len == 1:
+        return render_template("q_two.html", question=q2, options=c2)
+    elif sesh_len == 2:
+        return render_template("q_three.html", question=q3, options=c3)
+    elif sesh_len == 3:
+        return render_template("q_four.html", question=q4, options=c4)
+    elif sesh_len == 4:
+        return redirect("/thanks")
+    elif sesh_len > 4 or sesh_len < 0:
+        flash('invalid question')
+        return redirect(request.referrer)
     else:
         flash('invalid question')
         print("workeddddd")
-        return redirect(f"/questions/{len(responses)}")
+        return redirect(request.referrer)
 
 
 @app.route("/thanks")
@@ -54,12 +67,14 @@ def thanks():
 
 @app.route("/answer", methods=["POST"])
 def answers():
-    response = request.form.get('answer')
-    responses.append(response)
-    print(responses)
+    answer = request.form['answer']
+    responses = session.get('responses', [])
+    responses.append(answer)
+    session['responses'] = responses
+    print(session['responses'])
 
     num = len(responses)
-    if num >= len(satisfaction_survey.questions):
+    if num >= q_len:
         return redirect("/thanks")
     else:
         return redirect(f"/questions/{num}")

@@ -7,7 +7,7 @@
     <title>{% block title %} {{ title }} {% endblock %}</title>
   </head>
   <body>
-    <form action="/questions/0">
+    <form action="/sesh" method="POST">
       <h1>{{ title }}</h1>
       <h3>{{ instructions }}</h3>
       <button type="submit">Start Survey</button>
